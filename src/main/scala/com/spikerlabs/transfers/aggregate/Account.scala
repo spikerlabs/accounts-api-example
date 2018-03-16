@@ -3,17 +3,17 @@ package com.spikerlabs.transfers.aggregate
 import java.util.UUID
 
 import com.spikerlabs.transfers.domain.Transaction._
-import com.spikerlabs.transfers.domain.{AccountID, Money, Transaction}
+import com.spikerlabs.transfers.domain.{AccountID, Money, Transaction, Account => DomainAccount}
 
-case class Account private(id: AccountID, private val transactions: List[Transaction]) {
+case class Account private(id: AccountID, private val transactions: List[Transaction]) extends DomainAccount {
 
   lazy val balance: Money = transactions.foldRight(Money(0)) {
     (transaction: Transaction, balanceSoFar: Money) =>
       transaction match {
         case Deposit(_, Money(depositAmount)) => Money(balanceSoFar.amount + depositAmount)
         case Withdrawal(_, Money(withdrawalAmount)) => Money(balanceSoFar.amount - withdrawalAmount)
-        case Transfer(_, this.id, Money(transferAmount)) => Money(balanceSoFar.amount + transferAmount)
-        case Transfer(this.id, _, Money(transferAmount)) => Money(balanceSoFar.amount - transferAmount)
+        case TransferOut(this.id, _, Money(transferAmount)) => Money(balanceSoFar.amount - transferAmount)
+        case TransferIn(this.id, _, Money(transferAmount)) => Money(balanceSoFar.amount + transferAmount)
       }
   }
 
@@ -21,10 +21,12 @@ case class Account private(id: AccountID, private val transactions: List[Transac
 
   def withdraw(amount: Money): Account = Account(id, transactions :+ Withdrawal(id, amount))
 
-  def transferOut(amount: Money, destination: Account): (Account, Account) = {
-    val transfer = Transfer(this.id, destination.id, amount)
-    (Account(this.id, this.transactions :+ transfer), Account(destination.id, destination.transactions :+ transfer))
-  }
+  def transferOut(amount: Money, destination: Account): (Account, Account) = (
+    Account(this.id, this.transactions :+ TransferOut(this.id, destination.id, amount)),
+    Account(destination.id, destination.transactions :+ TransferIn(destination.id, this.id, amount))
+  )
+
+  def transferIn(amount: Money, source: Account): (Account, Account) = source.transferOut(amount, this).swap
 
 }
 

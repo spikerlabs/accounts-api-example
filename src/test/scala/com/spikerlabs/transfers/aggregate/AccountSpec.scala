@@ -42,11 +42,11 @@ class AccountSpec  extends FlatSpec {
   it should "calculate the balance of an account lazily from deposits,  withdrawals and transfers in and out" in {
     val id = AccountID(UUID.randomUUID())
     val transactions = List(
-      Deposit(id, Money(10)),                                 // 10
-      Deposit(id, Money(30)),                                 // 40
-      Withdrawal(id, Money(20)),                              // 20
-      Transfer(id, AccountID(UUID.randomUUID()), Money(5)),   // 15
-      Transfer(AccountID(UUID.randomUUID()), id, Money(2.99)) // 17.99
+      Deposit(id, Money(10)),                                     // 10
+      Deposit(id, Money(30)),                                     // 40
+      Withdrawal(id, Money(20)),                                  // 20
+      TransferOut(id, AccountID(UUID.randomUUID()), Money(5)),    // 15
+      TransferIn(id, AccountID(UUID.randomUUID()), Money(2.99))   // 17.99
     )
     val maybeAccount = Account(transactions)
     assert(maybeAccount.isDefined)
@@ -74,5 +74,13 @@ class AccountSpec  extends FlatSpec {
     val (oneAccountAfter, anotherAccountAfter) = oneAccount.transferOut(Money(50), anotherAccount)
     assert(oneAccountAfter.balance == Money(50))
     assert(anotherAccountAfter.balance == Money(50))
+  }
+
+  it should "return a pair of updated accounts after a transfer into account" in {
+    val oneAccount = Account().deposit(Money(100))
+    val anotherAccount = Account().deposit(Money(300))
+    val (oneAccountAfter, anotherAccountAfter) = oneAccount.transferIn(Money(150), anotherAccount)
+    assert(oneAccountAfter.balance == Money(250))
+    assert(anotherAccountAfter.balance == Money(150))
   }
 }
