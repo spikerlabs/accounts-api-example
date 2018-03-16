@@ -1,13 +1,13 @@
-package com.spikerlabs.transfers.aggregate
+package com.spikerlabs.transfers.storage
 
 import java.util.UUID
 
+import com.spikerlabs.transfers.aggregate.Account
 import com.spikerlabs.transfers.domain.{AccountID, Money}
-import com.spikerlabs.transfers.storage.{InMemoryStorage, Storage}
 import monix.eval.Task
+import monix.execution.Scheduler.Implicits.global
 import org.scalatest._
 import org.scalatest.Matchers._
-import monix.execution.Scheduler.Implicits.global
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
