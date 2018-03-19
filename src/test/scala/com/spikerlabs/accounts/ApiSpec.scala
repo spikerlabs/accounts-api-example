@@ -20,7 +20,7 @@ import scala.concurrent.duration._
 class ApiSpec extends AsyncFlatSpec {
 
   val storage = InMemoryStorage()
-  val api = Api(storage).httpService
+  val api = Api.httpService(Service(storage))
 
   it should "create an account" in {
     val request = Request[Task](Method.POST, Uri.uri("/create"))

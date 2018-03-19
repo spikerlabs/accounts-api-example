@@ -1,18 +1,18 @@
 package com.spikerlabs.accounts
 
 import com.spikerlabs.accounts.service.{Error, Request, Response}
-import com.spikerlabs.accounts.storage.Storage
 import io.circe.syntax._
 import io.circe.generic.auto._
 import monix.eval.Task
 import org.http4s.HttpService
 import org.http4s.circe._
 import org.http4s.dsl.Http4sDsl
+import org.http4s.server.blaze.BlazeBuilder
 
-case class Api(private val storage: Storage) extends Http4sDsl[Task] {
+import monix.execution.Scheduler.Implicits.global
 
-  val service = Service(storage)
-  val httpService: HttpService[Task] = HttpService[Task] {
+object Api extends Http4sDsl[Task] {
+  def httpService(service: Service): HttpService[Task] = HttpService[Task] {
     case request @ POST -> Root / "transfer" =>
       request.decodeJson[Request.Transfer] flatMap {
         service.handle(_).flatMap {
@@ -33,4 +33,6 @@ case class Api(private val storage: Storage) extends Http4sDsl[Task] {
       }
   }
 
+  def httpStream(service: Service, port: Int = 8080, host: String = "0.0.0.0"): BlazeBuilder[Task] =
+    BlazeBuilder[Task].bindHttp(port, host).mountService(httpService(service), "/")
 }
