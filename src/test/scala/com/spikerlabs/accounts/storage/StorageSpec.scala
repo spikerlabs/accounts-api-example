@@ -1,9 +1,9 @@
-package com.spikerlabs.transfers.storage
+package com.spikerlabs.accounts.storage
 
 import java.util.UUID
 
-import com.spikerlabs.transfers.aggregate.Account
-import com.spikerlabs.transfers.domain.{AccountID, Money}
+import com.spikerlabs.accounts.aggregate.Account
+import com.spikerlabs.accounts.domain.{AccountID, Money}
 import monix.eval.Task
 import monix.execution.Scheduler.Implicits.global
 import org.scalatest._

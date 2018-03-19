@@ -1,9 +1,9 @@
-package com.spikerlabs.transfers.aggregate
+package com.spikerlabs.accounts.aggregate
 
 import java.util.UUID
 
-import com.spikerlabs.transfers.domain.Transaction._
-import com.spikerlabs.transfers.domain.{AccountID, Money}
+import com.spikerlabs.accounts.domain.Transaction._
+import com.spikerlabs.accounts.domain.{AccountID, Money}
 import org.scalatest._
 
 class AccountSpec  extends FlatSpec {

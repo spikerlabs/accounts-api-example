@@ -1,4 +1,4 @@
-package com.spikerlabs.transfers.domain
+package com.spikerlabs.accounts.domain
 
 import java.util.UUID
 

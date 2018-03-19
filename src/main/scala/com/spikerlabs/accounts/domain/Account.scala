@@ -1,4 +1,4 @@
-package com.spikerlabs.transfers.domain
+package com.spikerlabs.accounts.domain
 
 trait Account {
   def balance: Money

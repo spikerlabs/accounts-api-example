@@ -1,7 +1,7 @@
-package com.spikerlabs.transfers.storage
+package com.spikerlabs.accounts.storage
 
-import com.spikerlabs.transfers.domain.{AccountID, Transaction}
-import com.spikerlabs.transfers.domain.Transaction.{Deposit, TransferIn, TransferOut, Withdrawal}
+import com.spikerlabs.accounts.domain.{AccountID, Transaction}
+import com.spikerlabs.accounts.domain.Transaction.{Deposit, TransferIn, TransferOut, Withdrawal}
 import monix.eval.Task
 
 case class InMemoryStorage() extends Storage {

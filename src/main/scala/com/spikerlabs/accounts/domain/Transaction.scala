@@ -1,4 +1,4 @@
-package com.spikerlabs.transfers.domain
+package com.spikerlabs.accounts.domain
 
 sealed trait Transaction {
   def amount: Money

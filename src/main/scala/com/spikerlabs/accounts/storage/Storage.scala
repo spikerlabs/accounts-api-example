@@ -1,7 +1,7 @@
-package com.spikerlabs.transfers.storage
+package com.spikerlabs.accounts.storage
 
-import com.spikerlabs.transfers.aggregate.Account
-import com.spikerlabs.transfers.domain.{AccountID, Transaction}
+import com.spikerlabs.accounts.aggregate.Account
+import com.spikerlabs.accounts.domain.{AccountID, Transaction}
 import monix.eval.Task
 
 trait Storage {
