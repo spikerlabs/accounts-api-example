@@ -31,6 +31,7 @@ object Api extends Http4sDsl[Task] {
           case response: Error.NotFound => NotFound(response.asJson)
         }
       }
+    case GET -> Root / "healthcheck" => Ok()
   }
 
   def httpStream(service: Service, port: Int = 8080, host: String = "0.0.0.0"): BlazeBuilder[Task] =
