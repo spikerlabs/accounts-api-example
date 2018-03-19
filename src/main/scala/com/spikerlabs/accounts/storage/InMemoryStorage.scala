@@ -4,20 +4,23 @@ import com.spikerlabs.accounts.domain.{AccountID, Transaction}
 import com.spikerlabs.accounts.domain.Transaction.{Deposit, TransferIn, TransferOut, Withdrawal}
 import monix.eval.Task
 
-case class InMemoryStorage() extends Storage {
-  private var transactions: List[Transaction] = List.empty
+import scala.collection.mutable
 
-  def findTransactions(id: AccountID): Task[List[Transaction]] = Task.eval {
+case class InMemoryStorage() extends Storage {
+  private val transactions: mutable.MutableList[Transaction] = mutable.MutableList.empty
+
+  protected def findTransactions(id: AccountID): Task[List[Transaction]] = Task.eval {
     transactions.filter {
-      case Deposit(`id`, _) => true
-      case Withdrawal(`id`, _) => true
-      case TransferIn(`id`, _, _) => true
-      case TransferOut(`id`, _, _) => true
+      case Deposit(`id`, _, _) => true
+      case Withdrawal(`id`, _, _) => true
+      case TransferIn(`id`, _, _, _) => true
+      case TransferOut(`id`, _, _, _) => true
       case _ => false
-    }
+    }.toList
   }
 
-  def storeTransactions(transactions: List[Transaction]): Task[Unit] = Task.eval {
-    this.transactions = (this.transactions diff transactions) ++ transactions
+  protected def storeTransactions(transactions: List[Transaction]): Task[Unit] = Task.eval {
+    val newTransactions = transactions diff this.transactions
+    this.transactions ++= newTransactions
   }
 }

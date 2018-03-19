@@ -17,6 +17,6 @@ trait Storage {
     }
   }.map(_.reduce((_, _) => ()))
 
-  def findTransactions(id: AccountID): Task[List[Transaction]]
-  def storeTransactions(transactions: List[Transaction]): Task[Unit]
+  protected def findTransactions(id: AccountID): Task[List[Transaction]]
+  protected def storeTransactions(transactions: List[Transaction]): Task[Unit]
 }

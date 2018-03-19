@@ -10,10 +10,10 @@ case class Account private(id: AccountID, private val transactions: List[Transac
   lazy val balance: Money = transactions.foldRight(Money(0)) {
     (transaction: Transaction, balanceSoFar: Money) =>
       transaction match {
-        case Deposit(_, Money(depositAmount)) => Money(balanceSoFar.amount + depositAmount)
-        case Withdrawal(_, Money(withdrawalAmount)) => Money(balanceSoFar.amount - withdrawalAmount)
-        case TransferOut(this.id, _, Money(transferAmount)) => Money(balanceSoFar.amount - transferAmount)
-        case TransferIn(this.id, _, Money(transferAmount)) => Money(balanceSoFar.amount + transferAmount)
+        case Deposit(_, Money(depositAmount), _) => Money(balanceSoFar.amount + depositAmount)
+        case Withdrawal(_, Money(withdrawalAmount), _) => Money(balanceSoFar.amount - withdrawalAmount)
+        case TransferOut(this.id, _, Money(transferAmount), _) => Money(balanceSoFar.amount - transferAmount)
+        case TransferIn(this.id, _, Money(transferAmount), _) => Money(balanceSoFar.amount + transferAmount)
       }
   }
 
@@ -41,7 +41,7 @@ object Account {
 
   def apply(transaction: List[Transaction]): Option[Account] = {
     transaction match {
-      case initialTransactions @ Deposit(id, _) :: _ => Some(Account(id, initialTransactions))
+      case initialTransactions @ Deposit(id, _, _) :: _ => Some(Account(id, initialTransactions))
       case _ => None
     }
   }
