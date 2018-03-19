@@ -1,5 +1,7 @@
 package com.spikerlabs.accounts
 
+import java.util.UUID
+
 import io.circe.generic.auto._
 import io.circe.syntax._
 import io.circe.parser.decode
@@ -51,12 +53,27 @@ class ApiSpec extends AsyncFlatSpec {
     }.runAsync
   }
 
+  it should "return 404 when at least one of transfer accounts was not found" in {
+    val account = Account().deposit(Money(20))
+    Await.ready(storage.storeAccount(account).runAsync, 1.second)
+    val request = Request[Task](
+      Method.POST,
+      Uri.uri("/transfer"),
+      body = makeBody(s"""{"source": {"id": "${account.id.id.toString}"}, "destination": {"id": "${UUID.randomUUID()}"}, "funds": {"amount": 50}}""")
+    )
+
+    api.run(request).value.map { maybeResponse =>
+      assert(maybeResponse.isDefined)
+      assert(maybeResponse.get.status == Status.NotFound)
+    }.runAsync
+  }
+
   it should "create an account" in {
     val request = Request[Task](Method.POST, Uri.uri("/create"))
     api.run(request).value.map { maybeResponse =>
       assert(maybeResponse.isDefined)
       assert(maybeResponse.get.status == Status.Ok)
-      val body = Await.result(maybeResponse.get.body.compile.fold("")(_ + _.toChar).runAsync, 1.second)
+      val body = parseBody(maybeResponse.get.body)
       val eitherResponse = decode[Response.Account](body)
       assert(eitherResponse.isRight)
       eitherResponse.foreach { response =>
@@ -80,7 +97,7 @@ class ApiSpec extends AsyncFlatSpec {
     api.run(request).value.map { maybeResponse =>
       assert(maybeResponse.isDefined)
       assert(maybeResponse.get.status == Status.Ok)
-      val body = Await.result(maybeResponse.get.body.compile.fold("")(_ + _.toChar).runAsync, 1.second)
+      val body = parseBody(maybeResponse.get.body)
       val eitherResponse = decode[Response.Account](body)
       assert(eitherResponse.isRight)
       eitherResponse.foreach { response =>
@@ -91,6 +108,18 @@ class ApiSpec extends AsyncFlatSpec {
         assert(maybeAccount.get.balance == Money(300))
       }
       succeed
+    }.runAsync
+  }
+
+  it should "return 404 when deposit account was not found" in {
+    val request = Request[Task](
+      Method.POST,
+      Uri.uri("/deposit"),
+      body = makeBody(s"""{"account": {"id": "${UUID.randomUUID()}"}, "funds": {"amount": 200}}""")
+    )
+    api.run(request).value.map { maybeResponse =>
+      assert(maybeResponse.isDefined)
+      assert(maybeResponse.get.status == Status.NotFound)
     }.runAsync
   }
 
