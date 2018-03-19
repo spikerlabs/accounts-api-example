@@ -1,4 +1,4 @@
-name := "transfers-api"
+name := "accounts-api"
 
 version := "0.1"
 
