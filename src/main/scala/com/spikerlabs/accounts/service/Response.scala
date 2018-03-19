@@ -2,8 +2,7 @@ package com.spikerlabs.accounts.service
 
 import com.spikerlabs.accounts.domain.{AccountID, Money}
 
-trait Response {
-}
+trait Response
 
 object Response {
   case class SuccessfulTransfer() extends Response

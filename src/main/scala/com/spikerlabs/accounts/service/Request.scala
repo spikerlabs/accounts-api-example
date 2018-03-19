@@ -2,8 +2,7 @@ package com.spikerlabs.accounts.service
 
 import com.spikerlabs.accounts.domain.{AccountID, Money}
 
-sealed trait Request {
-}
+sealed trait Request
 
 object Request {
   case class CreateAccount() extends Request
