@@ -18,6 +18,7 @@ object Api extends Http4sDsl[Task] {
         service.handle(_).flatMap {
           case _: Response.SuccessfulTransfer => Ok()
           case response: Error.NotFound => NotFound(response.asJson)
+          case response: Error.InvalidTransfer => BadRequest(response.asJson)
         }
       }
     case POST -> Root / "create" =>

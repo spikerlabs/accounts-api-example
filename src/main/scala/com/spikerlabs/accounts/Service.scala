@@ -17,7 +17,9 @@ case class Service(private val storage: Storage) {
     * @return either response or an error
     */
   def handle(request: Request): Task[Response] = request match {
-    case request : Request.Transfer => transfer(request)
+    case request : Request.Transfer =>
+      if (request.funds.amount > 0 && request.source != request.destination) transfer(request)
+      else Task.eval(Error.InvalidTransfer())
     case _ : Request.CreateAccount => createAccount
     case request : Request.Deposit => deposit(request)
   }

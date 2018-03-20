@@ -67,6 +67,37 @@ class ApiSpec extends AsyncFlatSpec {
     }.runAsync
   }
 
+  it should "return client error when transfer amount is negative" in {
+    val oneAccount = Account().deposit(Money(20))
+    val otherAccount = Account()
+    Await.ready(storage.storeAccount(oneAccount, otherAccount).runAsync, 1.second)
+    val request = Request[Task](
+      Method.POST,
+      Uri.uri("/transfer"),
+      body = makeBody(s"""{"source": {"id": "${oneAccount.id.id.toString}"}, "destination": {"id": "${otherAccount.id.id.toString}"}, "funds": {"amount": -50}}""")
+    )
+
+    httpService.run(request).value.map { maybeResponse =>
+      assert(maybeResponse.isDefined)
+      assert(maybeResponse.get.status == Status.BadRequest)
+    }.runAsync
+  }
+
+  it should "return client error when source and deposit are the same" in {
+    val oneAccount = Account().deposit(Money(20))
+    Await.ready(storage.storeAccount(oneAccount).runAsync, 1.second)
+    val request = Request[Task](
+      Method.POST,
+      Uri.uri("/transfer"),
+      body = makeBody(s"""{"source": {"id": "${oneAccount.id.id.toString}"}, "destination": {"id": "${oneAccount.id.id.toString}"}, "funds": {"amount": 50}}""")
+    )
+
+    httpService.run(request).value.map { maybeResponse =>
+      assert(maybeResponse.isDefined)
+      assert(maybeResponse.get.status == Status.BadRequest)
+    }.runAsync
+  }
+
   it should "create an account" in {
     val request = Request[Task](Method.POST, Uri.uri("/create"))
     httpService.run(request).value.map { maybeResponse =>

@@ -38,6 +38,21 @@ class ServiceSpec extends AsyncFlatSpec {
     }.runAsync
   }
 
+  it should "return error if transfer amount is negative" in {
+    val storage = InMemoryStorage()
+    val sourceAccount = Account().deposit(Money(300))
+    val destinationAccount = Account()
+    Await.ready(storage.storeAccount(sourceAccount).runAsync, 1.second)
+    Await.ready(storage.storeAccount(destinationAccount).runAsync, 1.second)
+    val service = Service(storage)
+
+    val request = Request.Transfer(sourceAccount.id, destinationAccount.id, Money(-100))
+
+    service.handle(request).map { response =>
+      assert(response == Error.InvalidTransfer())
+    }.runAsync
+  }
+
   it should "return error if source account was not found" in {
     val storage = InMemoryStorage()
     val service = Service(storage)
