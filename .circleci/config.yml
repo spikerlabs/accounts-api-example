@@ -38,7 +38,7 @@ jobs:
             - ~/.m2
           key: v1-dependencies--{{ checksum "build.sbt" }}
 
-      - run: cat /dev/null | sbt clean coverage test coverageReport
+      - run: cat /dev/null | sbt coverage test coverageReport
 
       - run: bash <(curl -s https://codecov.io/bash)
 
