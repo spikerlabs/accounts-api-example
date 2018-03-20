@@ -44,6 +44,7 @@ jobs:
 
       - run: sbt assembly
 
-      - run: java -jar target/scala-2.12/accounts-api-assembly-$(git describe --tags).jar /dev/null 2>&1 &
+      - run: java -jar target/scala-2.12/accounts-api-assembly-$(git describe --tags).jar /dev/null 2>&1:
+          background: true
 
       - run: sleep 10 && curl --verbose http://localhost:8080/healthcheck
