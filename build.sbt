@@ -1,7 +1,7 @@
 name := "accounts-api"
 
 git.gitTagToVersionNumber := { tag: String => Some(tag) }
-git.useGitDescribe := false
+git.useGitDescribe := true
 
 scalaVersion := "2.12.4"
 
