@@ -24,7 +24,7 @@ jobs:
     steps:
       - checkout
 
-      - run: apt-get install -y git curl
+      - run: sudo apt-get install -y git curl
 
       # Download and cache dependencies
       - restore_cache:
