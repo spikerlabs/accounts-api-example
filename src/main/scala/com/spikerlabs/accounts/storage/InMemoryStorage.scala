@@ -7,6 +7,7 @@ import monix.eval.Task
 import scala.collection.mutable
 
 case class InMemoryStorage() extends Storage {
+
   private val transactions: mutable.MutableList[Transaction] = mutable.MutableList.empty
 
   protected def findTransactions(id: AccountID): Task[List[Transaction]] = Task.eval {
@@ -23,4 +24,5 @@ case class InMemoryStorage() extends Storage {
     val newTransactions = transactions diff this.transactions
     this.transactions ++= newTransactions
   }
+
 }

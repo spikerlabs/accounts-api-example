@@ -5,6 +5,10 @@ import java.util.UUID
 import com.spikerlabs.accounts.domain.Transaction._
 import com.spikerlabs.accounts.domain.{AccountID, Money, Transaction, Account => DomainAccount}
 
+/**
+  * Does not to further validation at this point - assumes all requests were validated before reaching it.
+  * Constructor is private to enable account construction from list of transactions only.
+  */
 case class Account private(id: AccountID, private val transactions: List[Transaction]) extends DomainAccount {
 
   lazy val balance: Money = transactions.foldRight(Money(0)) {

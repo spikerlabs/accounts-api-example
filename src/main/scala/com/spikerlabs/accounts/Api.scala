@@ -11,6 +11,9 @@ import org.http4s.server.blaze.BlazeBuilder
 
 import monix.execution.Scheduler.Implicits.global
 
+/**
+  * Service implementation as HTTP API
+  */
 object Api extends Http4sDsl[Task] {
   def httpService(service: Service): HttpService[Task] = HttpService[Task] {
     case request @ POST -> Root / "transfer" =>
