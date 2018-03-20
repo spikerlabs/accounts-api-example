@@ -24,6 +24,8 @@ jobs:
     steps:
       - checkout
 
+      - run: apt-get install -y git curl
+
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -38,7 +40,16 @@ jobs:
             - ~/.m2
           key: v1-dependencies--{{ checksum "build.sbt" }}
 
-      # run tests!
       - run: cat /dev/null | sbt clean coverage test coverageReport
 
       - run: bash <(curl -s https://codecov.io/bash)
+
+      - run: sbt assembly
+
+      - run: java -jar target/scala-2.12/accounts-api-assembly-$(git describe --tags).jar /dev/null 2>&1 &
+
+      - run: sleep 1 && curl --verbose http://localhost:8080/healthcheck
+
+      - run: curl https://github.com/asarturas/paire/releases/download/0.3.0/paire-push -o paire-push
+
+      - run: chmod +x paire-push && ./paire-push -package target/scala-2.12/accounts-api-assembly-$(git describe --tags).jar
