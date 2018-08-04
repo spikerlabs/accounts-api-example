@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/spikerlabs/accounts-api-exercise/tree/master.svg?style=shield)](https://circleci.com/gh/spikerlabs/accounts-api-exercise/tree/master)
+[![CircleCI](https://circleci.com/gh/spikerlabs/accounts-api-example/tree/master.svg?style=shield)](https://circleci.com/gh/spikerlabs/accounts-api-example/tree/master)
 [![codecov](https://codecov.io/gh/spikerlabs/accounts-api-exercise/branch/master/graph/badge.svg)](https://codecov.io/gh/spikerlabs/accounts-api-exercise)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/1f3cd587671a419e981f4f17613bff13)](https://www.codacy.com/app/asarturas/payments-api-exercise?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=spikerlabs/payments-api-exercise&amp;utm_campaign=Badge_Grade)
 
